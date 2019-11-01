@@ -5,6 +5,7 @@ sys.path.append('..')
 
 class Configurable(object):
 	def __init__(self, config_file, extra_args):
+		## 解析配置文件的模块   .ini 文件
 		config = ConfigParser()
 		config.read(config_file)
 		if extra_args:
@@ -23,6 +24,15 @@ class Configurable(object):
 			for k, v in config.items(section):
 				print(k, v)
 
+	'''
+	a = Configurable(config_file, extra_args)
+	a.pretrained_embeddings_file
+	# out:  'home/ctb51/giga.100.txt'
+	
+	# [Data]
+	# pretrained_embeddings_file = home/ctb51/giga.100.txt
+	'''			
+				
 	@property
 	def pretrained_embeddings_file(self):
 		return self._config.get('Data','pretrained_embeddings_file')
