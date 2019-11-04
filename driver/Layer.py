@@ -5,6 +5,7 @@ import numpy as np
 from torch.nn import functional, init
 
 def get_tensor_np(t):
+    # 挂载到CPU上
     return t.data.cpu().numpy()
 
 def orthonormal_initializer(output_size, input_size):
@@ -89,6 +90,7 @@ class Biaffine(nn.Module):
         batch_size, len1, dim1 = input1.size()
         batch_size, len2, dim2 = input2.size()
         if self.bias[0]:
+            # 创建和对象相同type 和 device 的空矩阵
             ones = input1.data.new(batch_size, len1, 1).zero_().fill_(1)
             input1 = torch.cat((input1, Variable(ones)), dim=2)
             dim1 += 1
@@ -101,9 +103,9 @@ class Biaffine(nn.Module):
 
         affine = affine.view(batch_size, len1*self.out_features, dim2)
         input2 = torch.transpose(input2, 1, 2)
-
+        # bmm
         biaffine = torch.transpose(torch.bmm(affine, input2), 1, 2)
-
+        # 一般contiguous用于view(transpose之后)  最新可以用reshape替代
         biaffine = biaffine.contiguous().view(batch_size, len2, len1, self.out_features)
 
         return biaffine
@@ -115,6 +117,7 @@ class Biaffine(nn.Module):
             + ', out_features=' + str(self.out_features) + ')'
 
 class LSTM(nn.LSTM):
+    # 重写权重生成 reset_parameters重写
     def reset_parameters(self):
         for name, param in self.named_parameters():
             if "weight" in name:
@@ -155,6 +158,7 @@ class MyLSTM(nn.Module):
             param_names = ['weight_ih_l{}{}', 'weight_hh_l{}{}']
             param_names += ['bias_ih_l{}{}', 'bias_hh_l{}{}']
             param_names = [x.format(layer, suffix) for x in param_names]
+            # 将网络权重变成对象属性，便于访问
             for name, param in zip(param_names, layer_params):
                 setattr(self, name, param)
             self._all_weights.append(param_names)
@@ -177,6 +181,7 @@ class MyLSTM(nn.Module):
             if self.bidirectional:
                 param_ih_name = 'weight_ih_l{}{}'.format(layer, '_reverse')
                 param_hh_name = 'weight_hh_l{}{}'.format(layer, '_reverse')
+                # 由于之前setattr了，所以获取权值
                 param_ih = self.__getattr__(param_ih_name)
                 param_hh = self.__getattr__(param_hh_name)
                 if layer == 0:
@@ -198,7 +203,8 @@ class MyLSTM(nn.Module):
                 W_h, W_x = W[:, :self.hidden_size], W[:, self.hidden_size:]
                 param_ih.data.copy_(torch.from_numpy(np.concatenate([W_x] * 4, 0)))
                 param_hh.data.copy_(torch.from_numpy(np.concatenate([W_h] * 4, 0)))
-
+        
+        # named_parameters() 继承与 nn.Module里面的
         for name, param in self.named_parameters():
             if "bias" in name:
                 nn.init.constant(self.__getattr__(name), 0)
