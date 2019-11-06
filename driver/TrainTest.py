@@ -107,6 +107,7 @@ class Optimizer:
                                       eps=config.epsilon)
         decay, decay_step = config.decay, config.decay_steps
         l = lambda epoch: decay ** (epoch // decay_step)
+        # pytorch中对学习率动态调整的函数
         self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optim, lr_lambda=l)
 
     def step(self):
