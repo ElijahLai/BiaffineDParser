@@ -4,7 +4,7 @@ import torch.optim.lr_scheduler
 from driver.Layer import *
 import numpy as np
 
-
+# 补0
 def pad_sequence(xs, length=None, padding=-1, dtype=np.float64):
     lengths = [len(x) for x in xs]
     if length is None:
@@ -14,6 +14,7 @@ def pad_sequence(xs, length=None, padding=-1, dtype=np.float64):
                   for x, l in zip(xs, lengths)])
     return torch.from_numpy(y)
 
+# 加入图，有gpu用gpu
 def _model_var(model, x):
     p = next(filter(lambda p: p.requires_grad, model.parameters()))
     if p.is_cuda:
@@ -25,6 +26,7 @@ class BiaffineParser(object):
     def __init__(self, model, root_id):
         self.model = model
         self.root = root_id
+        # 有无gpu
         p = next(filter(lambda p: p.requires_grad, model.parameters()))
         self.use_cuda = p.is_cuda
         self.device = p.get_device() if self.use_cuda else None
