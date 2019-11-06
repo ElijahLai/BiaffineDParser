@@ -78,7 +78,7 @@ class ParserModel(nn.Module):
                                      vocab.rel_size, bias=(True, True))
 
     def forward(self, words, extwords, tags, masks):
-        # x = (batch size, sequence length, dimension of embedding)
+        # words = (batch size, sequence length)
         x_word_embed = self.word_embed(words)
         x_extword_embed = self.extword_embed(extwords)
         x_embed = x_word_embed + x_extword_embed
