@@ -85,6 +85,7 @@ class ParserModel(nn.Module):
         x_tag_embed = self.tag_embed(tags)
 
         if self.training:
+            # x = (batch size, sequence length, dimension of embedding)
             x_embed, x_tag_embed = drop_input_independent(x_embed, x_tag_embed, self.config.dropout_emb)
 
         x_lexical = torch.cat((x_embed, x_tag_embed), dim=2)
@@ -93,6 +94,7 @@ class ParserModel(nn.Module):
         outputs = outputs.transpose(1, 0)
 
         if self.training:
+            # x = (sequence length, batch size, hidden)
             outputs = drop_sequence_sharedmask(outputs, self.config.dropout_mlp)
 
         x_all_dep = self.mlp_arc_dep(outputs)
