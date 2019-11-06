@@ -89,8 +89,10 @@ class ParserModel(nn.Module):
             x_embed, x_tag_embed = drop_input_independent(x_embed, x_tag_embed, self.config.dropout_emb)
 
         x_lexical = torch.cat((x_embed, x_tag_embed), dim=2)
-
+           
+        # outputs = (sequence, batch_size, embedding_dim)
         outputs, _ = self.lstm(x_lexical, masks, None)
+        
         outputs = outputs.transpose(1, 0)
 
         if self.training:
