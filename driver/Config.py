@@ -15,6 +15,19 @@ class Configurable(object):
 				if k in extra_args:
 					v = type(v)(extra_args[k])
 					config.set(section, k, v)
+		'''
+		[db]
+		db_host = 127.0.0.1
+		db_port = 69
+		db_user = root
+		db_pass = root
+		host_port = 69
+
+		[concurrent]
+		thread = 10
+		processor = 20
+		'''
+		
 		self._config = config
 		if not os.path.isdir(self.save_dir):
 			os.mkdir(self.save_dir)
