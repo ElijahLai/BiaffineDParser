@@ -3,6 +3,7 @@ from data.Vocab import *
 
 
 def drop_input_independent(word_embeddings, tag_embeddings, dropout_emb):
+    # mask input data
     batch_size, seq_length, _ = word_embeddings.size()
     word_masks = word_embeddings.data.new(batch_size, seq_length).fill_(1 - dropout_emb)
     word_masks = Variable(torch.bernoulli(word_masks), requires_grad=False)
@@ -19,6 +20,7 @@ def drop_input_independent(word_embeddings, tag_embeddings, dropout_emb):
     return word_embeddings, tag_embeddings
 
 def drop_sequence_sharedmask(inputs, dropout, batch_first=True):
+    # mask sequence shared parameters
     if batch_first:
         inputs = inputs.transpose(0, 1)
     seq_length, batch_size, hidden_size = inputs.size()
