@@ -34,6 +34,7 @@ def train(data, dev_data, test_data, parser, vocab, config):
             loss_value = loss.data.cpu().numpy()
             loss.backward()
 
+            # output index, accuracy
             arc_correct, label_correct, total_arcs = parser.compute_accuracy(heads, rels)
             overall_arc_correct += arc_correct
             overall_label_correct += label_correct
@@ -44,6 +45,7 @@ def train(data, dev_data, test_data, parser, vocab, config):
             print("Step:%d, ARC:%.2f, REL:%.2f, Iter:%d, batch:%d, length:%d,time:%.2f, loss:%.2f" \
                 %(global_step, uas, las, iter, batch_iter, overall_total_arcs, during_time, loss_value[0]))
 
+            # reset gradient and optimizer
             batch_iter += 1
             if batch_iter % config.update_every == 0 or batch_iter == batch_num:
                 nn.utils.clip_grad_norm(filter(lambda p: p.requires_grad, parser.model.parameters()), \
@@ -52,6 +54,7 @@ def train(data, dev_data, test_data, parser, vocab, config):
                 parser.model.zero_grad()       
                 global_step += 1
 
+            # output dev dataset index
             if batch_iter % config.validate_every == 0 or batch_iter == batch_num:
                 arc_correct, rel_correct, arc_total, dev_uas, dev_las = \
                     evaluate(dev_data, parser, vocab, config.dev_file + '.' + str(global_step))
