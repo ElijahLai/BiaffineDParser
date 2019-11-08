@@ -148,11 +148,11 @@ if __name__ == '__main__':
 
     args, extra_args = argparser.parse_known_args()
     config = Configurable(args.config_file, extra_args)
-
+    # word preprocessing
     vocab = creatVocab(config.train_file, config.min_occur_count)
     vec = vocab.load_pretrained_embs(config.pretrained_embeddings_file)
     pickle.dump(vocab, open(config.save_vocab_path, 'wb'))
-
+    # set parameters
     args, extra_args = argparser.parse_known_args()
     config = Configurable(args.config_file, extra_args)
     torch.set_num_threads(args.thread)
