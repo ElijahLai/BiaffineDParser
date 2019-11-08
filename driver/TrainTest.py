@@ -72,6 +72,11 @@ def train(data, dev_data, test_data, parser, vocab, config):
 
 
 def evaluate(data, parser, vocab, outputFile):
+    '''
+    parser.model.eval()
+    with torch.no_grad():
+        xxxxxx
+    '''
     start = time.time()
     parser.model.eval()
     output = open(outputFile, 'w', encoding='utf-8')
