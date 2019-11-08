@@ -54,7 +54,7 @@ def train(data, dev_data, test_data, parser, vocab, config):
                 parser.model.zero_grad()       
                 global_step += 1
 
-            # output dev dataset index
+            # output dev dataset metrics
             if batch_iter % config.validate_every == 0 or batch_iter == batch_num:
                 arc_correct, rel_correct, arc_total, dev_uas, dev_las = \
                     evaluate(dev_data, parser, vocab, config.dev_file + '.' + str(global_step))
