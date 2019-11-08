@@ -34,7 +34,7 @@ def train(data, dev_data, test_data, parser, vocab, config):
             loss_value = loss.data.cpu().numpy()
             loss.backward()
 
-            # output index, accuracy
+            # output metric, accuracy
             arc_correct, label_correct, total_arcs = parser.compute_accuracy(heads, rels)
             overall_arc_correct += arc_correct
             overall_label_correct += label_correct
