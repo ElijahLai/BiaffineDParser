@@ -57,7 +57,8 @@ def batch_data_variable(batch, vocab):
     batch_size = len(batch)
     for b in range(1, batch_size):
         if len(batch[b]) > length: length = len(batch[b])
-
+            
+    # padding 0 with maximum length
     words = Variable(torch.LongTensor(batch_size, length).zero_(), requires_grad=False)
     extwords = Variable(torch.LongTensor(batch_size, length).zero_(), requires_grad=False)
     tags = Variable(torch.LongTensor(batch_size, length).zero_(), requires_grad=False)
